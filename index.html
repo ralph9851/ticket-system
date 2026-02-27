@@ -81,7 +81,7 @@ header h1 {
 }
 
 header h1 i {
-  color: var(--accent-yellow); /* ใช้สีเหลืองสวีเดนที่ไอคอนให้เด่นขึ้น */
+  color: var(--accent-yellow); 
   -webkit-text-fill-color: initial;
   font-size: 2.5rem;
   text-shadow: 0 0 15px rgba(255, 205, 0, 0.3);
@@ -98,61 +98,12 @@ header p {
   padding: 0 1.5rem 3rem;
 }
 
-/* Stats Section */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
-  animation: fadeInUp 0.8s ease 0.2s both;
-}
-
-.stat-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-  background: var(--glass-hover);
-}
-
-.stat-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-}
-
-.stat-info h3 {
-  font-size: 0.9rem;
-  color: var(--text-sec);
-  font-weight: 500;
-}
-
-.stat-number {
-  font-size: 1.8rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
 /* Main Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 350px 1fr;
   gap: 2rem;
-  animation: fadeInUp 0.8s ease 0.4s both;
+  animation: fadeInUp 0.8s ease 0.2s both; /* ขยับเวลา animation ขึ้นมาเพราะเอาสถิติออกไปแล้ว */
 }
 
 .card {
@@ -193,7 +144,7 @@ input, select, textarea {
   width: 100%;
   padding: 0.875rem 1rem;
   border-radius: 12px;
-  background: rgba(0, 20, 40, 0.5); /* พื้นหลังช่องกรอกสีเข้ม */
+  background: rgba(0, 20, 40, 0.5); 
   border: 1px solid var(--border-light);
   color: var(--text-main);
   font-size: 0.95rem;
@@ -208,10 +159,10 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(255, 205, 0, 0.15);
 }
 
-/* 🟢 แก้ปัญหาตัวหนังสือสีขาวบนพื้นขาวใน Dropdown 🟢 */
+/* Dropdown Fix */
 select option {
-  background-color: #003366; /* ให้พื้นหลังเป็นสีน้ำเงินเข้ม */
-  color: #ffffff; /* ตัวอักษรสีขาวจะได้อ่านออก */
+  background-color: #003366; 
+  color: #ffffff; 
 }
 
 button[type="submit"] {
@@ -407,52 +358,13 @@ button[type="submit"]:hover {
 
 <div class="container">
   
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(255, 205, 0, 0.2); color: var(--accent-yellow);">
-        <i class="material-icons-round">analytics</i>
-      </div>
-      <div class="stat-info">
-        <h3>คำขอทั้งหมด</h3>
-        <div class="stat-number" id="totalTickets">0</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">
-        <i class="material-icons-round">new_releases</i>
-      </div>
-      <div class="stat-info">
-        <h3>รอการแก้ไข</h3>
-        <div class="stat-number" id="openTickets" style="color: #fca5a5;">0</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #fcd34d;">
-        <i class="material-icons-round">autorenew</i>
-      </div>
-      <div class="stat-info">
-        <h3>กำลังดำเนินการ</h3>
-        <div class="stat-number" id="progressTickets" style="color: #fcd34d;">0</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">
-        <i class="material-icons-round">task_alt</i>
-      </div>
-      <div class="stat-info">
-        <h3>เสร็จสิ้นแล้ว</h3>
-        <div class="stat-number" id="doneTickets" style="color: #6ee7b7;">0</div>
-      </div>
-    </div>
-  </div>
-
   <div class="dashboard-grid">
     <div class="card" style="height: fit-content; position: sticky; top: 2rem;">
       <h2><i class="material-icons-round">add_circle_outline</i> แจ้งปัญหาใหม่</h2>
       <form id="ticketForm">
         <div class="form-group">
           <label>ชื่อผู้แจ้ง</label>
-          <input id="reporter" placeholder="ระบุชื่อผู้แจ้ง และ แผนก" required>
+          <input id="reporter" placeholder="ระบุชื่อ-นามสกุล หรือ แผนก" required>
         </div>
 
         <div class="form-group">
@@ -470,7 +382,7 @@ button[type="submit"]:hover {
 
         <div class="form-group">
           <label>รายละเอียดปัญหา</label>
-          <textarea id="problem" rows="4" placeholder="อธิบายอาการที่พบ เช่น เครื่องปริ้นมีปัญหา" required></textarea>
+          <textarea id="problem" rows="4" placeholder="อธิบายอาการที่พบให้ชัดเจน เพื่อความรวดเร็วในการแก้ไข..." required></textarea>
         </div>
 
         <button type="submit" id="submitBtn">
@@ -517,13 +429,6 @@ const getStatusClass = (status) => {
   return 'status-done-bg';
 };
 
-function updateStats() {
-  document.getElementById("totalTickets").textContent = tickets.length;
-  document.getElementById("openTickets").textContent = tickets.filter(t => t.status === 'open').length;
-  document.getElementById("progressTickets").textContent = tickets.filter(t => t.status === 'progress').length;
-  document.getElementById("doneTickets").textContent = tickets.filter(t => t.status === 'done').length;
-}
-
 function showToast(message, isError = false) {
   toast.querySelector('span').textContent = message;
   toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
@@ -542,7 +447,6 @@ function renderTickets() {
         <p>ระบบพร้อมให้บริการแล้ว สร้างรายการแรกของคุณได้เลย</p>
       </div>
     `;
-    updateStats();
     return;
   }
 
@@ -575,8 +479,6 @@ function renderTickets() {
       </div>
     `;
   }).join('');
-
-  updateStats();
 }
 
 function updateStatus(id, status, selectElement) {
@@ -587,7 +489,6 @@ function updateStatus(id, status, selectElement) {
     localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
     selectElement.className = `status-select ${getStatusClass(status)}`;
-    updateStats();
   }
 }
 
@@ -629,7 +530,7 @@ form.onsubmit = async (e) => {
     */
     showToast("ส่งคำขอรับบริการเรียบร้อยแล้ว!");
   } catch (err) {
-    showToast("บันทึกสำเร็จ แต่การส่งอีเมลแจ้งเตือนล้มเหลว", true);
+    showToast("บันทึกสำเร็จ แต่การส่งข้อมูลผิดพลาดบางส่วน", true);
     console.error(err);
   } finally {
     submitBtn.innerHTML = originalBtnText;
