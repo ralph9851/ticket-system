@@ -211,7 +211,7 @@ header p {
   padding: 2rem;
   box-shadow: var(--shadow-lg);
   display: flex;
-  flex-direction: column; /* ให้เนื้อหาเรียงลงมา */
+  flex-direction: column; 
 }
 
 .card h2 {
@@ -296,7 +296,7 @@ button[type="submit"]:hover {
    ดีไซน์ใหม่: Timeline Tickets Section 
    ========================================= */
 .tickets-container {
-  overflow-y: visible; /* เอา Scroll ด้านในออกตามที่เคยปรับ */
+  overflow-y: visible; 
   padding-right: 1rem;
   padding-left: 1.5rem; 
   position: relative;
@@ -872,15 +872,16 @@ form.onsubmit = async (e) => {
       ticket_id: ticket.id
     });
     
-    /* await fetch("URL_GOOGLE_APPS_SCRIPT_ของคุณ", {
+    // เปิดใช้งานการส่งข้อมูลไปที่ Google Script ที่กำหนด
+    await fetch("https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData
     });
-    */
-    showToast("ส่งคำขอรับบริการเรียบร้อยแล้ว!");
+    
+    showToast("ส่งคำขอรับบริการและแจ้งเตือนผ่านอีเมลเรียบร้อยแล้ว!");
   } catch (err) {
-    showToast("บันทึกสำเร็จ แต่การส่งข้อมูลผิดพลาดบางส่วน", true);
+    showToast("บันทึกสำเร็จ แต่การส่งแจ้งเตือนผ่านอีเมลผิดพลาด", true);
     console.error(err);
   } finally {
     submitBtn.innerHTML = originalBtnText;
