@@ -194,7 +194,6 @@ header p {
   font-weight: 700;
   line-height: 1.2;
 }
-/* ======================================================= */
 
 /* Main Grid */
 .dashboard-grid {
@@ -211,6 +210,8 @@ header p {
   border-radius: 24px;
   padding: 2rem;
   box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column; /* ให้เนื้อหาเรียงลงมา */
 }
 
 .card h2 {
@@ -295,20 +296,18 @@ button[type="submit"]:hover {
    ดีไซน์ใหม่: Timeline Tickets Section 
    ========================================= */
 .tickets-container {
-  max-height: 600px;
-  overflow-y: auto;
+  overflow-y: visible; /* เอา Scroll ด้านในออกตามที่เคยปรับ */
   padding-right: 1rem;
-  padding-left: 1.5rem; /* เผื่อพื้นที่ให้เส้น Timeline */
+  padding-left: 1.5rem; 
   position: relative;
 }
 
-/* เส้นยาวๆ ของ Timeline */
 .tickets-container::before {
   content: '';
   position: absolute;
   top: 10px;
-  bottom: 10px;
-  left: 6px; /* ตำแหน่งเส้น */
+  bottom: 0;
+  left: 6px; 
   width: 2px;
   background: var(--border-light);
   border-radius: 2px;
@@ -333,12 +332,11 @@ button[type="submit"]:hover {
   transform: translateX(5px);
 }
 
-/* จุดวงกลมเรืองแสงบนเส้น Timeline */
 .ticket::before {
   content: '';
   position: absolute;
   top: 1.5rem;
-  left: -1.5rem; /* ดึงกลับไปทับเส้นพอดี */
+  left: -1.5rem; 
   width: 14px;
   height: 14px;
   border-radius: 50%;
@@ -349,7 +347,6 @@ button[type="submit"]:hover {
   transition: all 0.3s ease;
 }
 
-/* สีและเอฟเฟกต์ตามสถานะ */
 .ticket[data-status="open"]::before {
   border-color: var(--danger);
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
@@ -365,7 +362,6 @@ button[type="submit"]:hover {
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
-/* โครงสร้างด้านในตั๋วแบบใหม่ */
 .ticket-header {
   display: flex;
   justify-content: space-between;
@@ -435,7 +431,6 @@ button[type="submit"]:hover {
   font-size: 1.1rem;
 }
 
-/* แต่ง Select ให้กลืนไปกับ Footer */
 .status-select {
   padding: 0.4rem 0.75rem;
   border-radius: 20px;
@@ -443,7 +438,7 @@ button[type="submit"]:hover {
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
-  appearance: none; /* ซ่อนลูกศรแบบเก่า */
+  appearance: none; 
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
@@ -455,7 +450,35 @@ button[type="submit"]:hover {
 .status-progress-bg { background-color: rgba(245,158,11,0.15); color: #fcd34d; }
 .status-done-bg { background-color: rgba(16,185,129,0.15); color: #6ee7b7; }
 
-/* ======================================================= */
+/* =========================================
+   ปุ่มแสดงเพิ่มเติม (Load More) 
+   ========================================= */
+.load-more-container {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.load-more-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-light);
+  color: var(--text-sec);
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  border-color: var(--border-focus);
+}
 
 .empty-state {
   text-align: center;
@@ -486,8 +509,8 @@ button[type="submit"]:hover {
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse-danger {
@@ -514,27 +537,21 @@ button[type="submit"]:hover {
     height: auto;
   }
 
-  .tickets-container {
-    max-height: none; 
-    overflow-y: visible;
-  }
-  
-  /* ให้เส้น Timeline ชิดขอบบนมือถือ */
   .tickets-container::before {
     left: 2px;
   }
   
   .ticket {
     padding: 1rem;
-    margin-left: -0.5rem; /* ขยับการ์ดให้ชิดเส้นขึ้น */
+    margin-left: -0.5rem; 
   }
 
   .ticket::before {
-    left: -1rem; /* ขยับจุดให้ตรงเส้น */
+    left: -1rem; 
   }
 
   .ticket:hover {
-    transform: none; /* ปิด hover effect เลื่อนขวาบนมือถือ */
+    transform: none; 
   }
   
   header {
@@ -666,6 +683,13 @@ button[type="submit"]:hover {
       <h2><i class="material-icons-round">history</i> ไทม์ไลน์แจ้งปัญหาล่าสุด</h2>
       <div id="ticketList" class="tickets-container">
         </div>
+      
+      <div id="loadMoreContainer" class="load-more-container" style="display: none;">
+        <button id="loadMoreBtn" class="load-more-btn">
+          แสดงเพิ่มเติม <i class="material-icons-round">expand_more</i>
+        </button>
+      </div>
+
     </div>
 
   </div>
@@ -681,11 +705,16 @@ const categorySelect = document.getElementById("category");
 const problemInput = document.getElementById("problem");
 const ticketList = document.getElementById("ticketList");
 const toast = document.getElementById("toast");
+const loadMoreBtn = document.getElementById("loadMoreBtn");
+const loadMoreContainer = document.getElementById("loadMoreContainer");
 
 // Toggle Stats Panel
 const toggleStatsBtn = document.getElementById("toggleStatsBtn");
 const statsWrapper = document.getElementById("statsWrapper");
 const toggleText = document.getElementById("toggleText");
+
+// ค่าเริ่มต้นให้โชว์แค่ 5 รายการ
+let visibleCount = 5;
 
 toggleStatsBtn.addEventListener("click", () => {
   statsWrapper.classList.toggle("show");
@@ -741,28 +770,29 @@ function renderTickets() {
         <p>ระบบพร้อมให้บริการแล้ว สร้างรายการแรกของคุณได้เลย</p>
       </div>
     `;
+    loadMoreContainer.style.display = "none";
     updateStats();
     return;
   }
 
-  ticketList.innerHTML = tickets.map(ticket => {
+  // หั่นอาร์เรย์มาแสดงตามจำนวน visibleCount
+  const ticketsToShow = tickets.slice(0, visibleCount);
+
+  ticketList.innerHTML = ticketsToShow.map(ticket => {
     const categoryName = categoryMap[ticket.category] || ticket.category;
     const statusClass = getStatusClass(ticket.status);
     
     return `
       <div class="ticket" data-status="${ticket.status}">
-        
         <div class="ticket-header">
           <div class="ticket-title-wrapper">
             <span class="ticket-category">${categoryName}</span>
             <span class="ticket-id">#TKT-${String(ticket.id).padStart(4, '0')}</span>
           </div>
         </div>
-
         <div class="ticket-desc">
           ${ticket.problem}
         </div>
-
         <div class="ticket-footer">
           <div class="ticket-meta">
             <span><i class="material-icons-round">account_circle</i> ${ticket.reporter}</span>
@@ -770,20 +800,31 @@ function renderTickets() {
               day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
             })}</span>
           </div>
-          
           <select class="status-select ${statusClass}" onchange="updateStatus(${ticket.id}, this.value, this)">
             <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>รอการแก้ไข</option>
             <option value="progress" ${ticket.status === 'progress' ? 'selected' : ''}>กำลังดำเนินการ</option>
             <option value="done" ${ticket.status === 'done' ? 'selected' : ''}>เสร็จสิ้น</option>
           </select>
         </div>
-
       </div>
     `;
   }).join('');
 
+  // เช็คว่ามีรายการเหลือให้กด "แสดงเพิ่มเติม" อีกไหม
+  if (tickets.length > visibleCount) {
+    loadMoreContainer.style.display = "block";
+  } else {
+    loadMoreContainer.style.display = "none";
+  }
+
   updateStats();
 }
+
+// เมื่อกดปุ่มแสดงเพิ่มเติม ให้เพิ่มโควต้าการแสดงผลทีละ 5 รายการ
+loadMoreBtn.addEventListener("click", () => {
+  visibleCount += 5;
+  renderTickets();
+});
 
 function updateStatus(id, status, selectElement) {
   const ticket = tickets.find(t => t.id === id);
@@ -792,7 +833,6 @@ function updateStatus(id, status, selectElement) {
     ticket.updatedAt = Date.now();
     localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
-    // อัปเดต Data attribute เพื่อให้ CSS ทำงาน และอัปเดต Class ของปุ่ม
     selectElement.closest('.ticket').setAttribute('data-status', status);
     selectElement.className = `status-select ${getStatusClass(status)}`;
     
@@ -819,6 +859,9 @@ form.onsubmit = async (e) => {
 
   tickets.unshift(ticket);
   localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
+  
+  // รีเซ็ตการแสดงผลกลับมาเป็น 5 รายการแรกทุกครั้งที่มีการแจ้งปัญหาใหม่
+  visibleCount = 5; 
   renderTickets();
   
   try {
@@ -845,7 +888,7 @@ form.onsubmit = async (e) => {
     form.reset();
     
     if(window.innerWidth > 900) {
-      ticketList.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 };
