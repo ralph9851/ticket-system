@@ -2,29 +2,34 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>IT Helpdesk ใหม่</title>
+<title>IT Helpdesk System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
-:root{
-  --bg-primary: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);
-  --glass: rgba(255,255,255,0.08);
-  --glass-hover: rgba(255,255,255,0.14);
-  --border: rgba(255,255,255,0.15);
-  --text-primary: #ffffff;
-  --text-secondary: #c7d2fe;
-  --text-muted: #94a3b8;
+:root {
+  /* Modern Dark Theme Palette */
+  --bg-dark: #0f172a;
+  --glass-bg: rgba(30, 41, 59, 0.6);
+  --glass-hover: rgba(51, 65, 85, 0.7);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-focus: rgba(99, 102, 241, 0.6);
+  
+  --text-main: #f8fafc;
+  --text-sec: #cbd5e1;
+  --text-muted: #64748b;
 
-  --accent-blue: linear-gradient(135deg, #6366f1, #4f46e5);
-  --accent-green: linear-gradient(135deg, #22c55e, #16a34a);
-  --accent-yellow: linear-gradient(135deg, #facc15, #eab308);
-  --accent-red: linear-gradient(135deg, #f43f5e, #e11d48);
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
 
-  --shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
-  --shadow-hover: 0 35px 60px -12px rgba(0,0,0,0.5);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  --glow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
 * {
@@ -34,155 +39,200 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  font-family: 'Prompt', sans-serif;
+  background-color: var(--bg-dark);
+  /* Mesh Gradient Background */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(30, 27, 75, 1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(49, 46, 129, 0.8) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(23, 37, 84, 0.9) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-main);
   min-height: 100vh;
-  overflow-x: hidden;
+  line-height: 1.6;
 }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
 header {
-  padding: 2rem;
+  padding: 3rem 1rem 2rem;
   text-align: center;
   position: relative;
-}
-
-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--border);
+  animation: fadeInDown 0.8s ease;
 }
 
 header h1 {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: var(--accent-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(to right, #818cf8, #c084fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+}
+
+header h1 i {
+  color: #818cf8;
+  -webkit-text-fill-color: initial;
+  font-size: 2.5rem;
 }
 
 header p {
-  color: var(--text-secondary);
+  color: var(--text-sec);
   font-size: 1.1rem;
-  font-weight: 400;
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 1.5rem 3rem;
 }
 
+/* Stats Section */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  background: var(--glass-hover);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-info h3 {
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Main Grid */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 350px 1fr;
   gap: 2rem;
-  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease 0.4s both;
 }
 
 .card {
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light);
   border-radius: 24px;
   padding: 2rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--accent-blue);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.card:hover {
-  background: var(--glass-hover);
-  border-color: rgba(59, 130, 246, 0.3);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-
-.card:hover::before {
-  opacity: 1;
+  box-shadow: var(--shadow-lg);
 }
 
 .card h2 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: var(--text-primary);
+  gap: 0.5rem;
+  color: var(--text-main);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.25rem;
 }
 
 label {
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--text-sec);
   margin-bottom: 0.5rem;
 }
 
 input, select, textarea {
   width: 100%;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.25rem;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  font-size: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-size: 0.95rem;
   font-family: inherit;
   transition: all 0.3s ease;
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255,255,255,0.12);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary);
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-button {
+button[type="submit"] {
   width: 100%;
-  padding: 1rem 2rem;
-  border-radius: 16px;
+  padding: 1rem;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  background: var(--accent-blue);
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  margin-top: 1rem;
 }
 
-button:hover {
+button[type="submit"]:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow);
+  box-shadow: var(--glow);
 }
 
-button:active {
-  transform: translateY(0);
-}
-
-.tickets-section {
+/* Tickets Section */
+.tickets-container {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -191,124 +241,150 @@ button:active {
 .ticket {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.05);
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: rgba(255,255,255,0.03);
   transition: all 0.3s ease;
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  animation: slideIn 0.4s ease;
 }
 
 .ticket:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(59, 130, 246, 0.2);
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.2);
 }
 
-.ticket-content {
+.ticket-info {
   flex: 1;
 }
 
-.ticket strong {
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 0.5rem;
+.ticket-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
 }
 
-.ticket p {
-  color: var(--text-secondary);
+.ticket-category {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 1.05rem;
+}
+
+.ticket-desc {
+  color: var(--text-sec);
+  font-size: 0.95rem;
   margin-bottom: 0.75rem;
   line-height: 1.5;
 }
 
 .ticket-meta {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.badge {
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  min-width: 120px;
-  text-align: center;
+.ticket-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.status-open { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-.status-progress { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
-.status-done { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.ticket-meta i {
+  font-size: 1rem;
+}
+
+.ticket-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-width: 140px;
+}
 
 .status-select {
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  font-family: inherit;
-  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  text-align: center;
-  padding: 1.5rem;
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  background: var(--accent-green);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.25rem;
-}
-
-@media (max-width: 900px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  header h1 {
-    font-size: 2rem;
-  }
-  
-  .container {
-    padding: 1rem;
-  }
-  
-  .ticket {
-    flex-direction: column;
-    gap: 1rem;
-  }
-}
+/* Status Colors */
+.status-open-bg { background: rgba(239,68,68,0.1); color: var(--danger); }
+.status-open-bg:focus { border-color: var(--danger); }
+.status-progress-bg { background: rgba(245,158,11,0.1); color: var(--warning); }
+.status-progress-bg:focus { border-color: var(--warning); }
+.status-done-bg { background: rgba(16,185,129,0.1); color: var(--success); }
+.status-done-bg:focus { border-color: var(--success); }
 
 .empty-state {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 4rem 1rem;
   color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .empty-state i {
   font-size: 4rem;
-  display: block;
   margin-bottom: 1rem;
-  opacity: 0.5;
+  background: linear-gradient(to bottom, var(--text-muted), transparent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .ticket { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .ticket-actions { width: 100%; align-items: flex-start; }
+  .status-select { width: 100%; }
+}
+
+/* Toast Notification */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--success);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1000;
+}
+
+#toast.show {
+  transform: translateY(0);
+  opacity: 1;
 }
 </style>
 </head>
@@ -316,122 +392,145 @@ button:active {
 <body>
 
 <header>
-  <h1><i class="material-icons">build</i> ระบบแจ้งปัญหา IT ใหม่</h1>
-  <p>Helpdesk & Service Request System - ออกแบบใหม่ สวยงาม ทันสมัย</p>
+  <h1><i class="material-icons-round">support_agent</i> IT Service Desk</h1>
+  <p>ระบบแจ้งซ่อมและร้องขอรับบริการด้านไอที</p>
 </header>
 
 <div class="container">
   
-  <!-- สถิติสรุป -->
   <div class="stats-grid">
-    <div class="stat-card card">
-      <div class="stat-number" id="totalTickets">0</div>
-      <div>ทั้งหมด</div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(99, 102, 241, 0.2); color: var(--primary);">
+        <i class="material-icons-round">analytics</i>
+      </div>
+      <div class="stat-info">
+        <h3>คำขอทั้งหมด</h3>
+        <div class="stat-number" id="totalTickets">0</div>
+      </div>
     </div>
-    <div class="stat-card card">
-      <div class="stat-number" style="-webkit-text-fill-color: #f87171;" id="openTickets">0</div>
-      <div>เปิดใหม่</div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: var(--danger);">
+        <i class="material-icons-round">new_releases</i>
+      </div>
+      <div class="stat-info">
+        <h3>รอการแก้ไข</h3>
+        <div class="stat-number" id="openTickets" style="color: var(--danger);">0</div>
+      </div>
     </div>
-    <div class="stat-card card">
-      <div class="stat-number" style="-webkit-text-fill-color: #f59e0b;" id="progressTickets">0</div>
-      <div>กำลังดำเนินการ</div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">
+        <i class="material-icons-round">autorenew</i>
+      </div>
+      <div class="stat-info">
+        <h3>กำลังดำเนินการ</h3>
+        <div class="stat-number" id="progressTickets" style="color: var(--warning);">0</div>
+      </div>
     </div>
-    <div class="stat-card card">
-      <div class="stat-number" style="-webkit-text-fill-color: #10b981;" id="doneTickets">0</div>
-      <div>เสร็จสิ้น</div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--success);">
+        <i class="material-icons-round">task_alt</i>
+      </div>
+      <div class="stat-info">
+        <h3>เสร็จสิ้นแล้ว</h3>
+        <div class="stat-number" id="doneTickets" style="color: var(--success);">0</div>
+      </div>
     </div>
   </div>
 
   <div class="dashboard-grid">
-
-    <div class="card">
-      <h2><i class="material-icons">add_circle</i> แจ้งปัญหาใหม่</h2>
+    <div class="card" style="height: fit-content; position: sticky; top: 2rem;">
+      <h2><i class="material-icons-round">add_circle_outline</i> แจ้งปัญหาใหม่</h2>
       <form id="ticketForm">
-        <label>ชื่อผู้แจ้ง</label>
-        <input id="reporter" placeholder="ป้อนชื่อของคุณ" required>
+        <div class="form-group">
+          <label>ชื่อผู้แจ้ง</label>
+          <input id="reporter" placeholder="ระบุชื่อ-นามสกุล หรือ แผนก" required>
+        </div>
 
-        <label>ประเภทปัญหา</label>
-        <select id="category" required>
-          <option value="">เลือกประเภทปัญหา</option>
-          <option value="hardware">🖥️ ฮาร์ดแวร์</option>
-          <option value="software">💻 ซอฟต์แวร์</option>
-          <option value="network">🌐 อินเทอร์เน็ต/เครือข่าย</option>
-          <option value="printer">🖨️ เครื่องพิมพ์</option>
-          <option value="account">👤 บัญชีผู้ใช้</option>
-          <option value="other">❓ อื่นๆ</option>
-        </select>
+        <div class="form-group">
+          <label>ประเภทปัญหา</label>
+          <select id="category" required>
+            <option value="" disabled selected>-- กรุณาเลือกประเภท --</option>
+            <option value="hardware">🖥️ ปัญหาฮาร์ดแวร์ / อุปกรณ์</option>
+            <option value="software">💻 ปัญหาซอฟต์แวร์ / โปรแกรม</option>
+            <option value="network">🌐 อินเทอร์เน็ต / เครือข่าย</option>
+            <option value="printer">🖨️ เครื่องพิมพ์ / สแกนเนอร์</option>
+            <option value="account">👤 บัญชีผู้ใช้ / รหัสผ่าน</option>
+            <option value="other">❓ อื่นๆ</option>
+          </select>
+        </div>
 
-        <label>รายละเอียดปัญหา</label>
-        <textarea id="problem" rows="5" placeholder="อธิบายปัญหาที่เกิดขึ้นอย่างละเอียด..." required></textarea>
+        <div class="form-group">
+          <label>รายละเอียดปัญหา</label>
+          <textarea id="problem" rows="4" placeholder="อธิบายอาการที่พบให้ชัดเจน เพื่อความรวดเร็วในการแก้ไข..." required></textarea>
+        </div>
 
-        <button type="submit">
-          <i class="material-icons">send</i> บันทึกและส่งคำขอ
+        <button type="submit" id="submitBtn">
+          <i class="material-icons-round">send</i> ส่งคำขอรับบริการ
         </button>
       </form>
     </div>
 
     <div class="card">
-      <h2><i class="material-icons">list</i> รายการแจ้งปัญหา</h2>
-      <div id="ticketList" class="tickets-section">
-        <!-- Tickets will be rendered here -->
-      </div>
+      <h2><i class="material-icons-round">format_list_bulleted</i> รายการแจ้งปัญหาล่าสุด</h2>
+      <div id="ticketList" class="tickets-container">
+        </div>
     </div>
 
   </div>
 </div>
 
+<div id="toast"><i class="material-icons-round">check_circle</i> <span>บันทึกข้อมูลสำเร็จ!</span></div>
+
 <script>
 const form = document.getElementById("ticketForm");
+const submitBtn = document.getElementById("submitBtn");
 const reporterInput = document.getElementById("reporter");
 const categorySelect = document.getElementById("category");
 const problemInput = document.getElementById("problem");
 const ticketList = document.getElementById("ticketList");
-const totalEl = document.getElementById("totalTickets");
-const openEl = document.getElementById("openTickets");
-const progressEl = document.getElementById("progressTickets");
-const doneEl = document.getElementById("doneTickets");
+const toast = document.getElementById("toast");
 
-let tickets = JSON.parse(localStorage.getItem("it_tickets_v2")) || [];
+let tickets = JSON.parse(localStorage.getItem("it_tickets_v3")) || [];
 let nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
 
-// แมพ category เป็นชื่อไทย
 const categoryMap = {
-  hardware: '🖥️ ฮาร์ดแวร์',
-  software: '💻 ซอฟต์แวร์',
-  network: '🌐 อินเทอร์เน็ต/เครือข่าย',
-  printer: '🖨️ เครื่องพิมพ์',
-  account: '👤 บัญชีผู้ใช้',
-  other: '❓ อื่นๆ'
+  hardware: 'ฮาร์ดแวร์ / อุปกรณ์',
+  software: 'ซอฟต์แวร์ / โปรแกรม',
+  network: 'อินเทอร์เน็ต / เครือข่าย',
+  printer: 'เครื่องพิมพ์',
+  account: 'บัญชีผู้ใช้',
+  other: 'อื่นๆ'
 };
 
-function getStatusConfig(status) {
-  const configs = {
-    open: { label: 'เปิดใหม่', class: 'status-open' },
-    progress: { label: 'กำลังดำเนินการ', class: 'status-progress' },
-    done: { label: 'เสร็จสิ้น', class: 'status-done' }
-  };
-  return configs[status] || configs.open;
-}
+const getStatusClass = (status) => {
+  if(status === 'open') return 'status-open-bg';
+  if(status === 'progress') return 'status-progress-bg';
+  return 'status-done-bg';
+};
 
 function updateStats() {
-  const total = tickets.length;
-  const open = tickets.filter(t => t.status === 'open').length;
-  const progress = tickets.filter(t => t.status === 'progress').length;
-  const done = tickets.filter(t => t.status === 'done').length;
+  document.getElementById("totalTickets").textContent = tickets.length;
+  document.getElementById("openTickets").textContent = tickets.filter(t => t.status === 'open').length;
+  document.getElementById("progressTickets").textContent = tickets.filter(t => t.status === 'progress').length;
+  document.getElementById("doneTickets").textContent = tickets.filter(t => t.status === 'done').length;
+}
+
+function showToast(message, isError = false) {
+  toast.querySelector('span').textContent = message;
+  toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
+  toast.querySelector('i').textContent = isError ? 'error' : 'check_circle';
   
-  totalEl.textContent = total;
-  openEl.textContent = open;
-  progressEl.textContent = progress;
-  doneEl.textContent = done;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 function renderTickets() {
   if (tickets.length === 0) {
     ticketList.innerHTML = `
       <div class="empty-state">
-        <i class="material-icons">ticket_star</i>
-        <p>ยังไม่มีคำขอแจ้งปัญหา</p>
-        <p style="font-size: 0.9rem; opacity: 0.7;">เริ่มแจ้งปัญหาครั้งแรกของคุณได้เลย</p>
+        <i class="material-icons-round">inbox</i>
+        <h3>ยังไม่มีรายการแจ้งซ่อม</h3>
+        <p>ระบบพร้อมให้บริการแล้ว สร้างรายการแรกของคุณได้เลย</p>
       </div>
     `;
     updateStats();
@@ -439,27 +538,31 @@ function renderTickets() {
   }
 
   ticketList.innerHTML = tickets.map(ticket => {
-    const statusConfig = getStatusConfig(ticket.status);
     const categoryName = categoryMap[ticket.category] || ticket.category;
+    const statusClass = getStatusClass(ticket.status);
     
     return `
       <div class="ticket">
-        <div class="ticket-content">
-          <strong>${categoryName}</strong>
-          <p>${ticket.problem}</p>
-          <div class="ticket-meta">
-            👤 ${ticket.reporter} • 
-            🕒 ${new Date(ticket.createdAt).toLocaleDateString('th-TH', { 
-              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' 
-            })}
+        <div class="ticket-info">
+          <div class="ticket-header">
+            <span class="ticket-category">${categoryName}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">#TKT-${String(ticket.id).padStart(4, '0')}</span>
           </div>
-          <span class="badge ${statusConfig.class}">${statusConfig.label}</span>
+          <p class="ticket-desc">${ticket.problem}</p>
+          <div class="ticket-meta">
+            <span><i class="material-icons-round">person</i> ${ticket.reporter}</span>
+            <span><i class="material-icons-round">schedule</i> ${new Date(ticket.createdAt).toLocaleDateString('th-TH', { 
+              day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
+            })}</span>
+          </div>
         </div>
-        <select class="status-select" onchange="updateStatus(${ticket.id}, this.value)">
-          <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>เปิดใหม่</option>
-          <option value="progress" ${ticket.status === 'progress' ? 'selected' : ''}>กำลังดำเนินการ</option>
-          <option value="done" ${ticket.status === 'done' ? 'selected' : ''}>เสร็จสิ้น</option>
-        </select>
+        <div class="ticket-actions">
+          <select class="status-select ${statusClass}" onchange="updateStatus(${ticket.id}, this.value, this)">
+            <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>รอการแก้ไข</option>
+            <option value="progress" ${ticket.status === 'progress' ? 'selected' : ''}>กำลังดำเนินการ</option>
+            <option value="done" ${ticket.status === 'done' ? 'selected' : ''}>เสร็จสิ้น</option>
+          </select>
+        </div>
       </div>
     `;
   }).join('');
@@ -467,18 +570,26 @@ function renderTickets() {
   updateStats();
 }
 
-function updateStatus(id, status) {
+function updateStatus(id, status, selectElement) {
   const ticket = tickets.find(t => t.id === id);
   if (ticket) {
     ticket.status = status;
     ticket.updatedAt = Date.now();
-    localStorage.setItem("it_tickets_v2", JSON.stringify(tickets));
-    renderTickets();
+    localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
+    
+    // เปลี่ยนสีทันทีโดยไม่ต้อง re-render ทั้งหมดเพื่อ UX ที่ดี
+    selectElement.className = `status-select ${getStatusClass(status)}`;
+    updateStats();
   }
 }
 
 form.onsubmit = async (e) => {
   e.preventDefault();
+  
+  // Disable button & show loading state
+  const originalBtnText = submitBtn.innerHTML;
+  submitBtn.innerHTML = `<i class="material-icons-round">sync</i> กำลังส่งข้อมูล...`;
+  submitBtn.disabled = true;
   
   const ticket = {
     id: nextId++,
@@ -491,9 +602,9 @@ form.onsubmit = async (e) => {
   };
 
   tickets.unshift(ticket);
-  localStorage.setItem("it_tickets_v2", JSON.stringify(tickets));
+  localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
+  renderTickets();
   
-  // ส่งแจ้งเตือนทาง email (ปรับปรุงจากเดิม)
   try {
     const formData = new URLSearchParams({
       reporter: ticket.reporter,
@@ -502,30 +613,29 @@ form.onsubmit = async (e) => {
       ticket_id: ticket.id
     });
     
-    await fetch("https://script.google.com/macros/s/AKfycbzbjZplx7f-6adqN8o6NzjxQJ8-cqTcdOLpKenGn-jqSUZD_q-TUTN6M6acpfG5k3p8/exec", {
+    // หมายเหตุ: เปิด Comment ด้านล่างเพื่อส่งข้อมูลไป Google Sheets
+    /*
+    await fetch("URL_GOOGLE_APPS_SCRIPT_ของคุณ", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData
     });
-    console.log("✅ ส่งอีเมลแจ้งเตือนสำเร็จ");
+    */
+    showToast("ส่งคำขอรับบริการเรียบร้อยแล้ว!");
   } catch (err) {
-    console.error("❌ ส่งอีเมลล้มเหลว:", err);
+    showToast("บันทึกสำเร็จ แต่การส่งอีเมลแจ้งเตือนล้มเหลว", true);
+    console.error(err);
+  } finally {
+    submitBtn.innerHTML = originalBtnText;
+    submitBtn.disabled = false;
+    form.reset();
+    ticketList.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
-  renderTickets();
-  form.reset();
-  
-  // Scroll ไปยังรายการ ticket
-  ticketList.scrollIntoView({ behavior: 'smooth' });
 };
 
 // โหลดข้อมูลเมื่อเริ่มต้น
 renderTickets();
 
-// Auto-save ทุก 30 วินาที (ป้องกันข้อมูลหาย)
-setInterval(() => {
-  localStorage.setItem("it_tickets_v2", JSON.stringify(tickets));
-}, 30000);
 </script>
 
 </body>
