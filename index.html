@@ -872,16 +872,26 @@ form.onsubmit = async (e) => {
       ticket_id: ticket.id
     });
     
-    // เปิดใช้งานการส่งข้อมูลไปที่ Google Script ที่กำหนด
-    await fetch("https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData
-    });
+    const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
+    const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
+
+    // ส่งข้อมูลไปทั้ง อีเมล และ Google Sheets พร้อมกันด้วย Promise.all
+    await Promise.all([
+      fetch(emailScriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData
+      }),
+      fetch(sheetScriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData
+      })
+    ]);
     
-    showToast("ส่งคำขอรับบริการเรียบร้อยแล้ว!");
+    showToast("ส่งคำขอและบันทึกลงระบบเรียบร้อยแล้ว!");
   } catch (err) {
-    showToast("บันทึกสำเร็จ แต่การส่งแจ้งเตือนผ่านอีเมลผิดพลาด", true);
+    showToast("บันทึกสำเร็จ แต่การส่งข้อมูลเบื้องหลังผิดพลาด", true);
     console.error(err);
   } finally {
     submitBtn.innerHTML = originalBtnText;
