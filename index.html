@@ -739,6 +739,12 @@ const categoryMap = {
   other: 'อื่นๆ'
 };
 
+const statusTextMap = {
+  open: 'รอการแก้ไข',
+  progress: 'กำลังดำเนินการ',
+  done: 'เสร็จสิ้น'
+};
+
 const getStatusClass = (status) => {
   if(status === 'open') return 'status-open-bg';
   if(status === 'progress') return 'status-progress-bg';
@@ -775,7 +781,6 @@ function renderTickets() {
     return;
   }
 
-  // หั่นอาร์เรย์มาแสดงตามจำนวน visibleCount
   const ticketsToShow = tickets.slice(0, visibleCount);
 
   ticketList.innerHTML = ticketsToShow.map(ticket => {
@@ -810,7 +815,6 @@ function renderTickets() {
     `;
   }).join('');
 
-  // เช็คว่ามีรายการเหลือให้กด "แสดงเพิ่มเติม" อีกไหม
   if (tickets.length > visibleCount) {
     loadMoreContainer.style.display = "block";
   } else {
@@ -820,12 +824,12 @@ function renderTickets() {
   updateStats();
 }
 
-// เมื่อกดปุ่มแสดงเพิ่มเติม ให้เพิ่มโควต้าการแสดงผลทีละ 5 รายการ
 loadMoreBtn.addEventListener("click", () => {
   visibleCount += 5;
   renderTickets();
 });
 
+// ฟังก์ชันอัปเดตสถานะแบบใหม่ มีการส่งข้อมูลกลับไปที่ Google Sheets
 function updateStatus(id, status, selectElement) {
   const ticket = tickets.find(t => t.id === id);
   if (ticket) {
@@ -833,10 +837,28 @@ function updateStatus(id, status, selectElement) {
     ticket.updatedAt = Date.now();
     localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
+    // เปลี่ยนดีไซน์บนหน้าจอทันที
     selectElement.closest('.ticket').setAttribute('data-status', status);
     selectElement.className = `status-select ${getStatusClass(status)}`;
-    
     updateStats();
+
+    // ส่งข้อมูลอัปเดตไป Google Sheets
+    const formData = new URLSearchParams({
+      action: 'update',
+      ticket_id: ticket.id,
+      status: statusTextMap[status]
+    });
+
+    const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
+    
+    fetch(sheetScriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => console.log("Sheet Update:", data))
+    .catch(error => console.error("Error updating sheet:", error));
   }
 }
 
@@ -860,12 +882,12 @@ form.onsubmit = async (e) => {
   tickets.unshift(ticket);
   localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
   
-  // รีเซ็ตการแสดงผลกลับมาเป็น 5 รายการแรกทุกครั้งที่มีการแจ้งปัญหาใหม่
   visibleCount = 5; 
   renderTickets();
   
   try {
     const formData = new URLSearchParams({
+      action: 'create', // ส่งบอก Google Sheets ว่าเป็นการสร้างใหม่
       reporter: ticket.reporter,
       category: categoryMap[ticket.category] || ticket.category,
       problem: ticket.problem,
@@ -875,7 +897,6 @@ form.onsubmit = async (e) => {
     const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
     const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
 
-    // ส่งข้อมูลไปทั้ง อีเมล และ Google Sheets พร้อมกันด้วย Promise.all
     await Promise.all([
       fetch(emailScriptUrl, {
         method: "POST",
@@ -891,7 +912,7 @@ form.onsubmit = async (e) => {
     
     showToast("ส่งคำขอและบันทึกลงระบบเรียบร้อยแล้ว!");
   } catch (err) {
-    showToast("บันทึกสำเร็จ แต่การส่งข้อมูลเบื้องหลังผิดพลาด", true);
+    showToast("บันทึกหน้าเว็บสำเร็จ แต่ฝั่งระบบฐานข้อมูลมีปัญหา", true);
     console.error(err);
   } finally {
     submitBtn.innerHTML = originalBtnText;
