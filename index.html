@@ -10,7 +10,6 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
 :root {
-  /* Swedish Blue Theme */
   --bg-dark: #00172e;
   --glass-bg: rgba(0, 51, 102, 0.4);
   --glass-hover: rgba(0, 68, 136, 0.6);
@@ -96,7 +95,6 @@ header p {
   padding: 0 1.5rem 3rem;
 }
 
-/* ================== ส่วนของสถิติแบบซ่อนได้ ================== */
 .stats-toggle-container {
   text-align: center;
   margin-bottom: 2rem;
@@ -195,7 +193,6 @@ header p {
   line-height: 1.2;
 }
 
-/* Main Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 350px 1fr;
@@ -232,7 +229,6 @@ header p {
   top: 2rem;
 }
 
-/* Form Styles */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -292,9 +288,6 @@ button[type="submit"]:hover {
   box-shadow: var(--glow);
 }
 
-/* =========================================
-   ดีไซน์ใหม่: Timeline Tickets Section 
-   ========================================= */
 .tickets-container {
   overflow-y: visible; 
   padding-right: 1rem;
@@ -450,9 +443,6 @@ button[type="submit"]:hover {
 .status-progress-bg { background-color: rgba(245,158,11,0.15); color: #fcd34d; }
 .status-done-bg { background-color: rgba(16,185,129,0.15); color: #6ee7b7; }
 
-/* =========================================
-   ปุ่มแสดงเพิ่มเติม (Load More) 
-   ========================================= */
 .load-more-container {
   text-align: center;
   margin-top: 1rem;
@@ -497,7 +487,9 @@ button[type="submit"]:hover {
   -webkit-text-fill-color: transparent;
 }
 
-/* Animations */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
+
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -525,7 +517,6 @@ button[type="submit"]:hover {
   100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .dashboard-grid { 
     grid-template-columns: 1fr; 
@@ -562,7 +553,6 @@ button[type="submit"]:hover {
   }
 }
 
-/* Toast Notification */
 #toast {
   position: fixed;
   bottom: 20px;
@@ -708,27 +698,27 @@ const toast = document.getElementById("toast");
 const loadMoreBtn = document.getElementById("loadMoreBtn");
 const loadMoreContainer = document.getElementById("loadMoreContainer");
 
-// Toggle Stats Panel
 const toggleStatsBtn = document.getElementById("toggleStatsBtn");
 const statsWrapper = document.getElementById("statsWrapper");
 const toggleText = document.getElementById("toggleText");
 
-// ค่าเริ่มต้นให้โชว์แค่ 5 รายการ
 let visibleCount = 5;
+let tickets = [];
+let nextId = 1;
+
+// URL ของ Sheet ที่เราสร้าง doGet ไว้แล้ว
+const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
+const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
 
 toggleStatsBtn.addEventListener("click", () => {
   statsWrapper.classList.toggle("show");
   toggleStatsBtn.classList.toggle("active");
-  
   if(statsWrapper.classList.contains("show")) {
     toggleText.textContent = "ซ่อนสถิติภาพรวม";
   } else {
     toggleText.textContent = "แสดงสถิติภาพรวม";
   }
 });
-
-let tickets = JSON.parse(localStorage.getItem("it_tickets_v3")) || [];
-let nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
 
 const categoryMap = {
   hardware: 'ฮาร์ดแวร์ / อุปกรณ์',
@@ -765,6 +755,27 @@ function showToast(message, isError = false) {
   
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// โหลดข้อมูลจาก Google Sheets (Cloud) เมื่อเปิดเว็บ
+async function loadTicketsFromSheet() {
+  ticketList.innerHTML = `
+    <div class="empty-state">
+      <i class="material-icons-round spin">sync</i>
+      <p>กำลังโหลดรายการแจ้งซ่อม...</p>
+    </div>
+  `;
+  try {
+    const response = await fetch(sheetScriptUrl);
+    const data = await response.json();
+    if(data && Array.isArray(data)) {
+      tickets = data;
+      nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
+    }
+  } catch (err) {
+    console.error("Load error:", err);
+  }
+  renderTickets();
 }
 
 function renderTickets() {
@@ -829,35 +840,27 @@ loadMoreBtn.addEventListener("click", () => {
   renderTickets();
 });
 
-// ฟังก์ชันอัปเดตสถานะแบบใหม่ มีการส่งข้อมูลกลับไปที่ Google Sheets
 function updateStatus(id, status, selectElement) {
   const ticket = tickets.find(t => t.id === id);
   if (ticket) {
     ticket.status = status;
     ticket.updatedAt = Date.now();
-    localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
-    // เปลี่ยนดีไซน์บนหน้าจอทันที
     selectElement.closest('.ticket').setAttribute('data-status', status);
     selectElement.className = `status-select ${getStatusClass(status)}`;
     updateStats();
 
-    // ส่งข้อมูลอัปเดตไป Google Sheets
     const formData = new URLSearchParams({
       action: 'update',
       ticket_id: ticket.id,
       status: statusTextMap[status]
     });
 
-    const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
-    
     fetch(sheetScriptUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData
     })
-    .then(response => response.json())
-    .then(data => console.log("Sheet Update:", data))
     .catch(error => console.error("Error updating sheet:", error));
   }
 }
@@ -866,7 +869,7 @@ form.onsubmit = async (e) => {
   e.preventDefault();
   
   const originalBtnText = submitBtn.innerHTML;
-  submitBtn.innerHTML = `<i class="material-icons-round">sync</i> กำลังส่งข้อมูล...`;
+  submitBtn.innerHTML = `<i class="material-icons-round spin">sync</i> กำลังบันทึก...`;
   submitBtn.disabled = true;
   
   const ticket = {
@@ -879,23 +882,19 @@ form.onsubmit = async (e) => {
     updatedAt: Date.now()
   };
 
+  // แอบใส่ข้อมูลเข้าไปโชว์ก่อนเพื่อความรวดเร็ว
   tickets.unshift(ticket);
-  localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
-  
   visibleCount = 5; 
   renderTickets();
   
   try {
     const formData = new URLSearchParams({
-      action: 'create', // ส่งบอก Google Sheets ว่าเป็นการสร้างใหม่
+      action: 'create', 
       reporter: ticket.reporter,
       category: categoryMap[ticket.category] || ticket.category,
       problem: ticket.problem,
       ticket_id: ticket.id
     });
-    
-    const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
-    const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
 
     await Promise.all([
       fetch(emailScriptUrl, {
@@ -925,7 +924,8 @@ form.onsubmit = async (e) => {
   }
 };
 
-renderTickets();
+// สั่งทำงานโหลดข้อมูลทันที
+loadTicketsFromSheet();
 
 </script>
 
