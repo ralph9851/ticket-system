@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>IT Helpdesk ใหม่</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+:root{
+  --bg-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  --glass: rgba(255,255,255,0.1);
+  --glass-hover: rgba(255,255,255,0.15);
+  --border: rgba(255,255,255,0.12);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --accent-blue: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  --accent-green: linear-gradient(135deg, #10b981, #059669);
+  --accent-yellow: linear-gradient(135deg, #f59e0b, #d97706);
+  --accent-red: linear-gradient(135deg, #ef4444, #dc2626);
+  --shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+  --shadow-hover: 0 35px 60px -12px rgba(0,0,0,0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+header {
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: var(--accent-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent-blue);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
+}
+
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+button {
+  width: 100%;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  background: var(--accent-blue);
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.tickets-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ticket {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ticket:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.ticket-content {
+  flex: 1;
+}
+
+.ticket strong {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.ticket p {
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.ticket-meta {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 120px;
+  text-align: center;
+}
+
+.status-open { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.status-progress { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.status-done { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+
+.status-select {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--accent-green);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+  
+  .ticket {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.empty-state i {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1><i class="material-icons">build</i> ระบบแจ้งปัญหา IT ใหม่</h1>
+  <p>Helpdesk & Service Request System - ออกแบบใหม่ สวยงาม ทันสมัย</p>
+</header>
+
+<div class="container">
+  
+  <!-- สถิติสรุป -->
+  <div class="stats-grid">
+    <div class="stat-card card">
+      <div class="stat-number" id="totalTickets">0</div>
+      <div>ทั้งหมด</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-number" style="-webkit-text-fill-color: #f87171;" id="openTickets">0</div>
+      <div>เปิดใหม่</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-number" style="-webkit-text-fill-color: #f59e0b;" id="progressTickets">0</div>
+      <div>กำลังดำเนินการ</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-number" style="-webkit-text-fill-color: #10b981;" id="doneTickets">0</div>
+      <div>เสร็จสิ้น</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+
+    <div class="card">
+      <h2><i class="material-icons">add_circle</i> แจ้งปัญหาใหม่</h2>
+      <form id="ticketForm">
+        <label>ชื่อผู้แจ้ง</label>
+        <input id="reporter" placeholder="ป้อนชื่อของคุณ" required>
+
+        <label>ประเภทปัญหา</label>
+        <select id="category" required>
+          <option value="">เลือกประเภทปัญหา</option>
+          <option value="hardware">🖥️ ฮาร์ดแวร์</option>
+          <option value="software">💻 ซอฟต์แวร์</option>
+          <option value="network">🌐 อินเทอร์เน็ต/เครือข่าย</option>
+          <option value="printer">🖨️ เครื่องพิมพ์</option>
+          <option value="account">👤 บัญชีผู้ใช้</option>
+          <option value="other">❓ อื่นๆ</option>
+        </select>
+
+        <label>รายละเอียดปัญหา</label>
+        <textarea id="problem" rows="5" placeholder="อธิบายปัญหาที่เกิดขึ้นอย่างละเอียด..." required></textarea>
+
+        <button type="submit">
+          <i class="material-icons">send</i> บันทึกและส่งคำขอ
+        </button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2><i class="material-icons">list</i> รายการแจ้งปัญหา</h2>
+      <div id="ticketList" class="tickets-section">
+        <!-- Tickets will be rendered here -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const form = document.getElementById("ticketForm");
+const reporterInput = document.getElementById("reporter");
+const categorySelect = document.getElementById("category");
+const problemInput = document.getElementById("problem");
+const ticketList = document.getElementById("ticketList");
+const totalEl = document.getElementById("totalTickets");
+const openEl = document.getElementById("openTickets");
+const progressEl = document.getElementById("progressTickets");
+const doneEl = document.getElementById("doneTickets");
+
+let tickets = JSON.parse(localStorage.getItem("it_tickets_v2")) || [];
+let nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
+
+// แมพ category เป็นชื่อไทย
+const categoryMap = {
+  hardware: '🖥️ ฮาร์ดแวร์',
+  software: '💻 ซอฟต์แวร์',
+  network: '🌐 อินเทอร์เน็ต/เครือข่าย',
+  printer: '🖨️ เครื่องพิมพ์',
+  account: '👤 บัญชีผู้ใช้',
+  other: '❓ อื่นๆ'
+};
+
+function getStatusConfig(status) {
+  const configs = {
+    open: { label: 'เปิดใหม่', class: 'status-open' },
+    progress: { label: 'กำลังดำเนินการ', class: 'status-progress' },
+    done: { label: 'เสร็จสิ้น', class: 'status-done' }
+  };
+  return configs[status] || configs.open;
+}
+
+function updateStats() {
+  const total = tickets.length;
+  const open = tickets.filter(t => t.status === 'open').length;
+  const progress = tickets.filter(t => t.status === 'progress').length;
+  const done = tickets.filter(t => t.status === 'done').length;
+  
+  totalEl.textContent = total;
+  openEl.textContent = open;
+  progressEl.textContent = progress;
+  doneEl.textContent = done;
+}
+
+function renderTickets() {
+  if (tickets.length === 0) {
+    ticketList.innerHTML = `
+      <div class="empty-state">
+        <i class="material-icons">ticket_star</i>
+        <p>ยังไม่มีคำขอแจ้งปัญหา</p>
+        <p style="font-size: 0.9rem; opacity: 0.7;">เริ่มแจ้งปัญหาครั้งแรกของคุณได้เลย</p>
+      </div>
+    `;
+    updateStats();
+    return;
+  }
+
+  ticketList.innerHTML = tickets.map(ticket => {
+    const statusConfig = getStatusConfig(ticket.status);
+    const categoryName = categoryMap[ticket.category] || ticket.category;
+    
+    return `
+      <div class="ticket">
+        <div class="ticket-content">
+          <strong>${categoryName}</strong>
+          <p>${ticket.problem}</p>
+          <div class="ticket-meta">
+            👤 ${ticket.reporter} • 
+            🕒 ${new Date(ticket.createdAt).toLocaleDateString('th-TH', { 
+              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+            })}
+          </div>
+          <span class="badge ${statusConfig.class}">${statusConfig.label}</span>
+        </div>
+        <select class="status-select" onchange="updateStatus(${ticket.id}, this.value)">
+          <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>เปิดใหม่</option>
+          <option value="progress" ${ticket.status === 'progress' ? 'selected' : ''}>กำลังดำเนินการ</option>
+          <option value="done" ${ticket.status === 'done' ? 'selected' : ''}>เสร็จสิ้น</option>
+        </select>
+      </div>
+    `;
+  }).join('');
+
+  updateStats();
+}
+
+function updateStatus(id, status) {
+  const ticket = tickets.find(t => t.id === id);
+  if (ticket) {
+    ticket.status = status;
+    ticket.updatedAt = Date.now();
+    localStorage.setItem("it_tickets_v2", JSON.stringify(tickets));
+    renderTickets();
+  }
+}
+
+form.onsubmit = async (e) => {
+  e.preventDefault();
+  
+  const ticket = {
+    id: nextId++,
+    reporter: reporterInput.value.trim(),
+    category: categorySelect.value,
+    problem: problemInput.value.trim(),
+    status: 'open',
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+
+  tickets.unshift(ticket);
+  localStorage.setItem("it_tickets_v2", JSON.stringify(tickets));
+  
+  // ส่งแจ้งเตือนทาง email (ปรับปรุงจากเดิม)
+  try {
+    const formData = new URLSearchParams({
+      reporter: ticket.reporter,
+      category: categoryMap[ticket.category] || ticket.category,
+      problem: ticket.problem,
+      ticket_id: ticket.id
+    });
+    
+    await fetch("https://script.google.com/macros/s/AKfycbzbjZplx7f-6adqN8o6NzjxQJ8-cqTcdOLpKenGn-jqSUZD_q-TUTN6M6acpfG5k3p8/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    });
+    console.log("✅ ส่งอีเมลแจ้งเตือนสำเร็จ");
+  } catch (err) {
+    console.error("❌ ส่งอีเมลล้มเหลว:", err);
+  }
+
+  renderTickets();
+  form.reset();
+  
+  // Scroll ไปยังรายการ ticket
+  ticketList.scrollIntoView({ behavior: 'smooth' });
+};
+
+// โหลดข้อมูลเมื่อเริ่มต้น
+renderTickets();
+
+// Auto-save ทุก 30 วินาที (ป้องกันข้อมูลหาย)
+setInterval(() => {
+  localStorage.setItem("it_tickets_v2", JSON.stringify(tickets));
+}, 30000);
+</script>
+
+</body>
+</html>
