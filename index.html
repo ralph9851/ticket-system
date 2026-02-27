@@ -142,7 +142,7 @@ header p {
 }
 
 .stats-wrapper.show {
-  max-height: 500px; /* ให้พื้นที่พอสำหรับกางออก */
+  max-height: 800px; 
   opacity: 1;
   transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out 0.1s;
   margin-bottom: 2.5rem;
@@ -225,6 +225,13 @@ header p {
   border-bottom: 1px solid var(--border-light);
 }
 
+/* Sticky Form - แยกคลาสออกมาเพื่อง่ายต่อการควบคุมในมือถือ */
+.sticky-form-container {
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
 /* Form Styles */
 .form-group {
   margin-bottom: 1.25rem;
@@ -257,7 +264,6 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(255, 205, 0, 0.15);
 }
 
-/* Dropdown Fix */
 select option {
   background-color: #003366; 
   color: #ffffff; 
@@ -343,6 +349,7 @@ button[type="submit"]:hover {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap; /* เผื่อในมือถือข้อความยาวจะได้ปัดตกบรรทัด */
 }
 
 .ticket-meta span {
@@ -413,12 +420,52 @@ button[type="submit"]:hover {
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* Responsive */
+/* =========================================
+   Responsive สำหรับมือถือ (แก้ปัญหาเลื่อนเกะกะ) 
+   ========================================= */
 @media (max-width: 900px) {
-  .dashboard-grid { grid-template-columns: 1fr; }
-  .ticket { flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .ticket-actions { width: 100%; align-items: flex-start; }
-  .status-select { width: 100%; }
+  .dashboard-grid { 
+    grid-template-columns: 1fr; 
+    gap: 1.5rem;
+  }
+  
+  /* ยกเลิกการยึดฟอร์มบนมือถือ เพื่อไม่ให้บังจอ */
+  .sticky-form-container {
+    position: static;
+    height: auto;
+  }
+
+  /* เอา Scrollbar ซ้อนทิ้งไป ให้ไหลยาวรวมกับหน้าเว็บ */
+  .tickets-container {
+    max-height: none; 
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  /* ปรับการ์ดตั๋วให้กะทัดรัดขึ้น */
+  .ticket { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 1rem; 
+    padding: 1rem;
+  }
+  
+  .ticket-actions { 
+    width: 100%; 
+    align-items: flex-start; 
+  }
+  
+  .status-select { 
+    width: 100%; 
+    padding: 0.75rem; /* เพิ่มพื้นที่กดบนจอมือถือ */
+  }
+  
+  header {
+    padding: 2rem 1rem 1rem;
+  }
+  header h1 {
+    font-size: 2rem;
+  }
 }
 
 /* Toast Notification */
@@ -506,7 +553,7 @@ button[type="submit"]:hover {
   </div>
 
   <div class="dashboard-grid">
-    <div class="card" style="height: fit-content; position: sticky; top: 2rem;">
+    <div class="card sticky-form-container">
       <h2><i class="material-icons-round">add_circle_outline</i> แจ้งปัญหาใหม่</h2>
       <form id="ticketForm">
         <div class="form-group">
@@ -709,7 +756,11 @@ form.onsubmit = async (e) => {
     submitBtn.innerHTML = originalBtnText;
     submitBtn.disabled = false;
     form.reset();
-    ticketList.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // ถ้าเล่นในมือถือ ไม่ต้องเด้ง Scroll ขึ้นไปข้างบนสุดเพื่อไม่ให้ตกใจ
+    if(window.innerWidth > 900) {
+      ticketList.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 };
 
