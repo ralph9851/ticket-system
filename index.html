@@ -10,7 +10,6 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
 :root {
-  /* Swedish Blue Theme */
   --bg-dark: #00172e;
   --glass-bg: rgba(0, 51, 102, 0.4);
   --glass-hover: rgba(0, 68, 136, 0.6);
@@ -96,7 +95,6 @@ header p {
   padding: 0 1.5rem 3rem;
 }
 
-/* ================== ส่วนของสถิติแบบซ่อนได้ ================== */
 .stats-toggle-container {
   text-align: center;
   margin-bottom: 2rem;
@@ -195,7 +193,6 @@ header p {
   line-height: 1.2;
 }
 
-/* Main Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 350px 1fr;
@@ -232,7 +229,6 @@ header p {
   top: 2rem;
 }
 
-/* Form Styles */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -292,11 +288,8 @@ button[type="submit"]:hover {
   box-shadow: var(--glow);
 }
 
-/* =========================================
-   ดีไซน์ใหม่: Timeline Tickets Section 
-   ========================================= */
 .tickets-container {
-  max-height: 600px; /* คืนค่าแถบเลื่อนบนจอคอม */
+  max-height: 600px;
   overflow-y: auto; 
   padding-right: 1rem;
   padding-left: 1.5rem; 
@@ -451,9 +444,6 @@ button[type="submit"]:hover {
 .status-progress-bg { background-color: rgba(245,158,11,0.15); color: #fcd34d; }
 .status-done-bg { background-color: rgba(16,185,129,0.15); color: #6ee7b7; }
 
-/* =========================================
-   ปุ่มแสดงเพิ่มเติม (Load More) 
-   ========================================= */
 .load-more-container {
   text-align: center;
   margin-top: 1rem;
@@ -528,7 +518,6 @@ button[type="submit"]:hover {
   100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
-/* Responsive สำหรับมือถือ */
 @media (max-width: 900px) {
   .dashboard-grid { 
     grid-template-columns: 1fr; 
@@ -570,7 +559,6 @@ button[type="submit"]:hover {
   }
 }
 
-/* Toast Notification */
 #toast {
   position: fixed;
   bottom: 20px;
@@ -724,7 +712,14 @@ let visibleCount = 5;
 let tickets = JSON.parse(localStorage.getItem("it_tickets_v3")) || [];
 let nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
 
-// URL ของ Sheet ที่เราสร้าง doGet/doPost ไว้แล้ว
+// 🟢 ตัวแปรสำหรับเก็บสถิติรวมของระบบจริงๆ
+let globalStats = {
+  total: tickets.length,
+  open: tickets.filter(t => t.status === 'open').length,
+  progress: tickets.filter(t => t.status === 'progress').length,
+  done: tickets.filter(t => t.status === 'done').length
+};
+
 const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
 const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
 
@@ -759,11 +754,12 @@ const getStatusClass = (status) => {
   return 'status-done-bg';
 };
 
-function updateStats() {
-  document.getElementById("totalTickets").textContent = tickets.length;
-  document.getElementById("openTickets").textContent = tickets.filter(t => t.status === 'open').length;
-  document.getElementById("progressTickets").textContent = tickets.filter(t => t.status === 'progress').length;
-  document.getElementById("doneTickets").textContent = tickets.filter(t => t.status === 'done').length;
+// 🟢 ฟังก์ชันอัปเดตตัวเลขสถิติบนหน้าเว็บ (ดึงจาก globalStats แทนที่จะนับแค่ 10 อัน)
+function updateStatsUI() {
+  document.getElementById("totalTickets").textContent = globalStats.total;
+  document.getElementById("openTickets").textContent = globalStats.open;
+  document.getElementById("progressTickets").textContent = globalStats.progress;
+  document.getElementById("doneTickets").textContent = globalStats.done;
 }
 
 function showToast(message, isError = false) {
@@ -775,9 +771,8 @@ function showToast(message, isError = false) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ฟังก์ชันโหลดข้อมูลจาก Cloud ตอนเปิดหน้าเว็บ
+// 🟢 โหลดข้อมูลจาก Google Sheets (แยกสถิติ และข้อมูล)
 async function loadTicketsFromSheet() {
-  // โชว์แอนิเมชันหมุนๆ เฉพาะตอนที่ไม่มีข้อมูลในเครื่องเลย
   if (tickets.length === 0) {
     ticketList.innerHTML = `
       <div class="empty-state">
@@ -786,22 +781,32 @@ async function loadTicketsFromSheet() {
       </div>
     `;
   } else {
-    renderTickets(); // แสดงของเก่าในเครื่องไปก่อนให้เว็บดูไว
+    renderTickets();
+    updateStatsUI();
   }
 
   try {
     const response = await fetch(sheetScriptUrl);
     const data = await response.json();
-    if(data && Array.isArray(data)) {
+    
+    // ตรวจสอบว่ามีข้อมูลก้อนใหม่ที่แบ่งเป็น stats กับ tickets ไหม
+    if(data && data.tickets) {
+      tickets = data.tickets;
+      globalStats = data.stats; // รับค่ายอดรวมจากฐานข้อมูลของแท้
+      nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
+      localStorage.setItem("it_tickets_v3", JSON.stringify(tickets)); 
+    } 
+    // กรณีที่โค้ดฝั่ง Sheet ยังไม่ได้อัปเดต
+    else if(data && Array.isArray(data)) {
       tickets = data;
       nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
-      localStorage.setItem("it_tickets_v3", JSON.stringify(tickets)); // อัปเดตข้อมูลในเครื่องให้ตรงกับ Cloud
     }
   } catch (err) {
     console.error("Load error (ใช้ข้อมูลเดิมในเครื่องไปก่อน):", err);
   }
   
-  renderTickets(); // อัปเดตหน้าจออีกครั้งด้วยข้อมูลล่าสุด
+  renderTickets(); 
+  updateStatsUI();
 }
 
 function renderTickets() {
@@ -814,7 +819,6 @@ function renderTickets() {
       </div>
     `;
     loadMoreContainer.style.display = "none";
-    updateStats();
     return;
   }
 
@@ -857,8 +861,6 @@ function renderTickets() {
   } else {
     loadMoreContainer.style.display = "none";
   }
-
-  updateStats();
 }
 
 loadMoreBtn.addEventListener("click", () => {
@@ -869,13 +871,18 @@ loadMoreBtn.addEventListener("click", () => {
 function updateStatus(id, status, selectElement) {
   const ticket = tickets.find(t => t.id === id);
   if (ticket) {
+    // 🟢 ลบสถิติอันเก่า และบวกเพิ่มให้อันใหม่บนหน้าจอทันที
+    globalStats[ticket.status]--;
+    globalStats[status]++;
+    
     ticket.status = status;
     ticket.updatedAt = Date.now();
     localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
     selectElement.closest('.ticket').setAttribute('data-status', status);
     selectElement.className = `status-select ${getStatusClass(status)}`;
-    updateStats();
+    
+    updateStatsUI();
 
     const formData = new URLSearchParams({
       action: 'update',
@@ -892,7 +899,6 @@ function updateStatus(id, status, selectElement) {
   }
 }
 
-// 🟢 แก้ไขตรงนี้: ไม่ต้องใช้คำว่า async รอโหลด ทำให้กดปุ๊บเสร็จปั๊บ (Fire and Forget)
 form.onsubmit = (e) => {
   e.preventDefault();
   
@@ -910,11 +916,16 @@ form.onsubmit = (e) => {
     updatedAt: Date.now()
   };
 
-  // 1. เพิ่มข้อมูลและโชว์หน้าเว็บทันที
   tickets.unshift(ticket);
   localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
   visibleCount = 5; 
+  
+  // 🟢 เพิ่มสถิติยอดรวมบนหน้าจอทันที
+  globalStats.total++;
+  globalStats.open++;
+  
   renderTickets();
+  updateStatsUI();
   
   const formData = new URLSearchParams({
     action: 'create', 
@@ -924,7 +935,6 @@ form.onsubmit = (e) => {
     ticket_id: ticket.id
   });
 
-  // 2. สั่งยิงข้อมูลไปอีเมลและ Google Sheets เงียบๆ เบื้องหลัง ไม่ต้องหยุดรอ
   Promise.all([
     fetch(emailScriptUrl, {
       method: "POST",
@@ -938,7 +948,6 @@ form.onsubmit = (e) => {
     })
   ]).catch(err => console.error("Background sync error:", err));
   
-  // 3. แจ้งเตือนเสร็จสิ้น คืนสถานะปุ่ม และล้างฟอร์มทันทีในเสี้ยววินาที
   showToast("ส่งคำขอรับบริการเรียบร้อยแล้ว!");
   submitBtn.innerHTML = originalBtnText;
   submitBtn.disabled = false;
@@ -949,7 +958,6 @@ form.onsubmit = (e) => {
   }
 };
 
-// สั่งทำงานดึงข้อมูลจาก Cloud ทันทีที่โหลดหน้าเว็บ
 loadTicketsFromSheet();
 
 </script>
