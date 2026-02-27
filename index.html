@@ -865,11 +865,11 @@ function updateStatus(id, status, selectElement) {
   }
 }
 
-form.onsubmit = async (e) => {
+form.onsubmit = (e) => { // เอาคำว่า async ออก
   e.preventDefault();
   
   const originalBtnText = submitBtn.innerHTML;
-  submitBtn.innerHTML = `<i class="material-icons-round spin">sync</i> กำลังบันทึก...`;
+  submitBtn.innerHTML = `<i class="material-icons-round spin">sync</i> กำลังส่ง...`;
   submitBtn.disabled = true;
   
   const ticket = {
@@ -881,6 +881,39 @@ form.onsubmit = async (e) => {
     createdAt: Date.now(),
     updatedAt: Date.now()
   };
+
+  // แอบใส่ข้อมูลเข้าไปโชว์ก่อนเพื่อความรวดเร็ว
+  tickets.unshift(ticket);
+  visibleCount = 5; 
+  renderTickets();
+  
+  const formData = new URLSearchParams({
+    action: 'create', 
+    reporter: ticket.reporter,
+    category: categoryMap[ticket.category] || ticket.category,
+    problem: ticket.problem,
+    ticket_id: ticket.id
+  });
+
+  const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
+  const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
+
+  // 🟢 สั่งยิงข้อมูลไป Google เงียบๆ ไม่ต้องใช้ await ยืนรอ
+  Promise.all([
+    fetch(emailScriptUrl, { method: "POST", body: formData }),
+    fetch(sheetScriptUrl, { method: "POST", body: formData })
+  ]).catch(err => console.error("Background sync error:", err));
+  
+  // 🟢 โชว์ว่าสำเร็จทันที คืนสถานะปุ่ม และล้างฟอร์มเลย โดยไม่ต้องรอ Google
+  showToast("ส่งคำขอและบันทึกลงระบบเรียบร้อยแล้ว!");
+  submitBtn.innerHTML = originalBtnText;
+  submitBtn.disabled = false;
+  form.reset();
+  
+  if(window.innerWidth > 900) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
 
   // แอบใส่ข้อมูลเข้าไปโชว์ก่อนเพื่อความรวดเร็ว
   tickets.unshift(ticket);
