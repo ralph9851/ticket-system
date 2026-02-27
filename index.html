@@ -10,26 +10,28 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
 :root {
-  /* Modern Dark Theme Palette */
-  --bg-dark: #0f172a;
-  --glass-bg: rgba(30, 41, 59, 0.6);
-  --glass-hover: rgba(51, 65, 85, 0.7);
-  --border-light: rgba(255, 255, 255, 0.1);
-  --border-focus: rgba(99, 102, 241, 0.6);
+  /* Swedish Blue Theme */
+  --bg-dark: #00172e;
+  --glass-bg: rgba(0, 51, 102, 0.4);
+  --glass-hover: rgba(0, 68, 136, 0.6);
+  --border-light: rgba(255, 255, 255, 0.15);
+  --border-focus: rgba(255, 205, 0, 0.5); /* Swedish Yellow focus */
   
   --text-main: #f8fafc;
   --text-sec: #cbd5e1;
-  --text-muted: #64748b;
+  --text-muted: #94a3b8;
 
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
+  --primary: #005293; /* Swedish Blue */
+  --primary-hover: #00427a;
+  --accent-yellow: #FFCD00; /* Swedish Yellow */
+  
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
 
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-  --glow: 0 0 20px rgba(99, 102, 241, 0.3);
+  --glow: 0 0 20px rgba(0, 82, 147, 0.4);
 }
 
 * {
@@ -41,12 +43,12 @@
 body {
   font-family: 'Prompt', sans-serif;
   background-color: var(--bg-dark);
-  /* Mesh Gradient Background */
+  /* Swedish Blue Mesh Gradient */
   background-image: 
-    radial-gradient(at 0% 0%, rgba(30, 27, 75, 1) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(49, 46, 129, 0.8) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(23, 37, 84, 0.9) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, #002244 0px, transparent 50%),
+    radial-gradient(at 100% 0%, #004080 0px, transparent 50%),
+    radial-gradient(at 100% 100%, #001a33 0px, transparent 50%),
+    radial-gradient(at 0% 100%, #003366 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
@@ -56,8 +58,8 @@ body {
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 
 header {
   padding: 3rem 1rem 2rem;
@@ -73,15 +75,16 @@ header h1 {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: linear-gradient(to right, #818cf8, #c084fc);
+  background: linear-gradient(to right, #93c5fd, #ffffff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 header h1 i {
-  color: #818cf8;
+  color: var(--accent-yellow); /* ใช้สีเหลืองสวีเดนที่ไอคอนให้เด่นขึ้น */
   -webkit-text-fill-color: initial;
   font-size: 2.5rem;
+  text-shadow: 0 0 15px rgba(255, 205, 0, 0.3);
 }
 
 header p {
@@ -190,7 +193,7 @@ input, select, textarea {
   width: 100%;
   padding: 0.875rem 1rem;
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(0, 20, 40, 0.5); /* พื้นหลังช่องกรอกสีเข้ม */
   border: 1px solid var(--border-light);
   color: var(--text-main);
   font-size: 0.95rem;
@@ -200,9 +203,15 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  border-color: var(--border-focus);
+  background: rgba(0, 30, 60, 0.8);
+  box-shadow: 0 0 0 3px rgba(255, 205, 0, 0.15);
+}
+
+/* 🟢 แก้ปัญหาตัวหนังสือสีขาวบนพื้นขาวใน Dropdown 🟢 */
+select option {
+  background-color: #003366; /* ให้พื้นหลังเป็นสีน้ำเงินเข้ม */
+  color: #ffffff; /* ตัวอักษรสีขาวจะได้อ่านออก */
 }
 
 button[type="submit"] {
@@ -251,8 +260,8 @@ button[type="submit"]:hover {
 }
 
 .ticket:hover {
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.25);
 }
 
 .ticket-info {
@@ -315,11 +324,11 @@ button[type="submit"]:hover {
 }
 
 /* Status Colors */
-.status-open-bg { background: rgba(239,68,68,0.1); color: var(--danger); }
+.status-open-bg { background: rgba(239,68,68,0.15); color: #fca5a5; }
 .status-open-bg:focus { border-color: var(--danger); }
-.status-progress-bg { background: rgba(245,158,11,0.1); color: var(--warning); }
+.status-progress-bg { background: rgba(245,158,11,0.15); color: #fcd34d; }
 .status-progress-bg:focus { border-color: var(--warning); }
-.status-done-bg { background: rgba(16,185,129,0.1); color: var(--success); }
+.status-done-bg { background: rgba(16,185,129,0.15); color: #6ee7b7; }
 .status-done-bg:focus { border-color: var(--success); }
 
 .empty-state {
@@ -400,7 +409,7 @@ button[type="submit"]:hover {
   
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(99, 102, 241, 0.2); color: var(--primary);">
+      <div class="stat-icon" style="background: rgba(255, 205, 0, 0.2); color: var(--accent-yellow);">
         <i class="material-icons-round">analytics</i>
       </div>
       <div class="stat-info">
@@ -409,30 +418,30 @@ button[type="submit"]:hover {
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: var(--danger);">
+      <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">
         <i class="material-icons-round">new_releases</i>
       </div>
       <div class="stat-info">
         <h3>รอการแก้ไข</h3>
-        <div class="stat-number" id="openTickets" style="color: var(--danger);">0</div>
+        <div class="stat-number" id="openTickets" style="color: #fca5a5;">0</div>
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">
+      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #fcd34d;">
         <i class="material-icons-round">autorenew</i>
       </div>
       <div class="stat-info">
         <h3>กำลังดำเนินการ</h3>
-        <div class="stat-number" id="progressTickets" style="color: var(--warning);">0</div>
+        <div class="stat-number" id="progressTickets" style="color: #fcd34d;">0</div>
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--success);">
+      <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">
         <i class="material-icons-round">task_alt</i>
       </div>
       <div class="stat-info">
         <h3>เสร็จสิ้นแล้ว</h3>
-        <div class="stat-number" id="doneTickets" style="color: var(--success);">0</div>
+        <div class="stat-number" id="doneTickets" style="color: #6ee7b7;">0</div>
       </div>
     </div>
   </div>
@@ -577,7 +586,6 @@ function updateStatus(id, status, selectElement) {
     ticket.updatedAt = Date.now();
     localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
-    // เปลี่ยนสีทันทีโดยไม่ต้อง re-render ทั้งหมดเพื่อ UX ที่ดี
     selectElement.className = `status-select ${getStatusClass(status)}`;
     updateStats();
   }
@@ -586,7 +594,6 @@ function updateStatus(id, status, selectElement) {
 form.onsubmit = async (e) => {
   e.preventDefault();
   
-  // Disable button & show loading state
   const originalBtnText = submitBtn.innerHTML;
   submitBtn.innerHTML = `<i class="material-icons-round">sync</i> กำลังส่งข้อมูล...`;
   submitBtn.disabled = true;
@@ -613,8 +620,7 @@ form.onsubmit = async (e) => {
       ticket_id: ticket.id
     });
     
-    // หมายเหตุ: เปิด Comment ด้านล่างเพื่อส่งข้อมูลไป Google Sheets
-    /*
+    /* หากต้องการส่งเข้า Google Sheets หรืออีเมล ให้เอา Comment ด้านล่างนี้ออกครับ
     await fetch("URL_GOOGLE_APPS_SCRIPT_ของคุณ", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -633,7 +639,6 @@ form.onsubmit = async (e) => {
   }
 };
 
-// โหลดข้อมูลเมื่อเริ่มต้น
 renderTickets();
 
 </script>
