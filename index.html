@@ -10,6 +10,7 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
 :root {
+  /* Swedish Blue Theme */
   --bg-dark: #00172e;
   --glass-bg: rgba(0, 51, 102, 0.4);
   --glass-hover: rgba(0, 68, 136, 0.6);
@@ -95,6 +96,7 @@ header p {
   padding: 0 1.5rem 3rem;
 }
 
+/* ================== ส่วนของสถิติแบบซ่อนได้ ================== */
 .stats-toggle-container {
   text-align: center;
   margin-bottom: 2rem;
@@ -193,6 +195,7 @@ header p {
   line-height: 1.2;
 }
 
+/* Main Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 350px 1fr;
@@ -229,6 +232,7 @@ header p {
   top: 2rem;
 }
 
+/* Form Styles */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -288,8 +292,12 @@ button[type="submit"]:hover {
   box-shadow: var(--glow);
 }
 
+/* =========================================
+   ดีไซน์ใหม่: Timeline Tickets Section 
+   ========================================= */
 .tickets-container {
-  overflow-y: visible; 
+  max-height: 600px; /* คืนค่าแถบเลื่อนบนจอคอม */
+  overflow-y: auto; 
   padding-right: 1rem;
   padding-left: 1.5rem; 
   position: relative;
@@ -443,6 +451,9 @@ button[type="submit"]:hover {
 .status-progress-bg { background-color: rgba(245,158,11,0.15); color: #fcd34d; }
 .status-done-bg { background-color: rgba(16,185,129,0.15); color: #6ee7b7; }
 
+/* =========================================
+   ปุ่มแสดงเพิ่มเติม (Load More) 
+   ========================================= */
 .load-more-container {
   text-align: center;
   margin-top: 1rem;
@@ -517,6 +528,7 @@ button[type="submit"]:hover {
   100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
+/* Responsive สำหรับมือถือ */
 @media (max-width: 900px) {
   .dashboard-grid { 
     grid-template-columns: 1fr; 
@@ -526,6 +538,11 @@ button[type="submit"]:hover {
   .sticky-form-container {
     position: static;
     height: auto;
+  }
+
+  .tickets-container {
+    max-height: none; 
+    overflow-y: visible;
   }
 
   .tickets-container::before {
@@ -553,6 +570,7 @@ button[type="submit"]:hover {
   }
 }
 
+/* Toast Notification */
 #toast {
   position: fixed;
   bottom: 20px;
@@ -703,10 +721,10 @@ const statsWrapper = document.getElementById("statsWrapper");
 const toggleText = document.getElementById("toggleText");
 
 let visibleCount = 5;
-let tickets = [];
-let nextId = 1;
+let tickets = JSON.parse(localStorage.getItem("it_tickets_v3")) || [];
+let nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
 
-// URL ของ Sheet ที่เราสร้าง doGet ไว้แล้ว
+// URL ของ Sheet ที่เราสร้าง doGet/doPost ไว้แล้ว
 const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
 const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
 
@@ -757,25 +775,33 @@ function showToast(message, isError = false) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// โหลดข้อมูลจาก Google Sheets (Cloud) เมื่อเปิดเว็บ
+// ฟังก์ชันโหลดข้อมูลจาก Cloud ตอนเปิดหน้าเว็บ
 async function loadTicketsFromSheet() {
-  ticketList.innerHTML = `
-    <div class="empty-state">
-      <i class="material-icons-round spin">sync</i>
-      <p>กำลังโหลดรายการแจ้งซ่อม...</p>
-    </div>
-  `;
+  // โชว์แอนิเมชันหมุนๆ เฉพาะตอนที่ไม่มีข้อมูลในเครื่องเลย
+  if (tickets.length === 0) {
+    ticketList.innerHTML = `
+      <div class="empty-state">
+        <i class="material-icons-round spin">sync</i>
+        <p>กำลังโหลดรายการแจ้งซ่อม...</p>
+      </div>
+    `;
+  } else {
+    renderTickets(); // แสดงของเก่าในเครื่องไปก่อนให้เว็บดูไว
+  }
+
   try {
     const response = await fetch(sheetScriptUrl);
     const data = await response.json();
     if(data && Array.isArray(data)) {
       tickets = data;
       nextId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
+      localStorage.setItem("it_tickets_v3", JSON.stringify(tickets)); // อัปเดตข้อมูลในเครื่องให้ตรงกับ Cloud
     }
   } catch (err) {
-    console.error("Load error:", err);
+    console.error("Load error (ใช้ข้อมูลเดิมในเครื่องไปก่อน):", err);
   }
-  renderTickets();
+  
+  renderTickets(); // อัปเดตหน้าจออีกครั้งด้วยข้อมูลล่าสุด
 }
 
 function renderTickets() {
@@ -845,6 +871,7 @@ function updateStatus(id, status, selectElement) {
   if (ticket) {
     ticket.status = status;
     ticket.updatedAt = Date.now();
+    localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
     
     selectElement.closest('.ticket').setAttribute('data-status', status);
     selectElement.className = `status-select ${getStatusClass(status)}`;
@@ -865,11 +892,12 @@ function updateStatus(id, status, selectElement) {
   }
 }
 
-form.onsubmit = (e) => { // เอาคำว่า async ออก
+// 🟢 แก้ไขตรงนี้: ไม่ต้องใช้คำว่า async รอโหลด ทำให้กดปุ๊บเสร็จปั๊บ (Fire and Forget)
+form.onsubmit = (e) => {
   e.preventDefault();
   
   const originalBtnText = submitBtn.innerHTML;
-  submitBtn.innerHTML = `<i class="material-icons-round spin">sync</i> กำลังส่ง...`;
+  submitBtn.innerHTML = `<i class="material-icons-round spin">sync</i> กำลังส่งข้อมูล...`;
   submitBtn.disabled = true;
   
   const ticket = {
@@ -882,8 +910,9 @@ form.onsubmit = (e) => { // เอาคำว่า async ออก
     updatedAt: Date.now()
   };
 
-  // แอบใส่ข้อมูลเข้าไปโชว์ก่อนเพื่อความรวดเร็ว
+  // 1. เพิ่มข้อมูลและโชว์หน้าเว็บทันที
   tickets.unshift(ticket);
+  localStorage.setItem("it_tickets_v3", JSON.stringify(tickets));
   visibleCount = 5; 
   renderTickets();
   
@@ -895,17 +924,22 @@ form.onsubmit = (e) => { // เอาคำว่า async ออก
     ticket_id: ticket.id
   });
 
-  const emailScriptUrl = "https://script.google.com/macros/s/AKfycbw_HqncrS_oqj7mYxR-MgmadjbBM98BRAq9smadF-oA3tfJTmVuHYyfkWyvq7vm9JV5/exec";
-  const sheetScriptUrl = "https://script.google.com/macros/s/AKfycbyAqst4JGHhSkCLSj8NhMZdyMTUtJNSO-K8EXTAnSosbYp5bUDcvhMcVSd1YDFqdws3/exec";
-
-  // 🟢 สั่งยิงข้อมูลไป Google เงียบๆ ไม่ต้องใช้ await ยืนรอ
+  // 2. สั่งยิงข้อมูลไปอีเมลและ Google Sheets เงียบๆ เบื้องหลัง ไม่ต้องหยุดรอ
   Promise.all([
-    fetch(emailScriptUrl, { method: "POST", body: formData }),
-    fetch(sheetScriptUrl, { method: "POST", body: formData })
+    fetch(emailScriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    }),
+    fetch(sheetScriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    })
   ]).catch(err => console.error("Background sync error:", err));
   
-  // 🟢 โชว์ว่าสำเร็จทันที คืนสถานะปุ่ม และล้างฟอร์มเลย โดยไม่ต้องรอ Google
-  showToast("ส่งคำขอและบันทึกลงระบบเรียบร้อยแล้ว!");
+  // 3. แจ้งเตือนเสร็จสิ้น คืนสถานะปุ่ม และล้างฟอร์มทันทีในเสี้ยววินาที
+  showToast("ส่งคำขอรับบริการเรียบร้อยแล้ว!");
   submitBtn.innerHTML = originalBtnText;
   submitBtn.disabled = false;
   form.reset();
@@ -915,49 +949,7 @@ form.onsubmit = (e) => { // เอาคำว่า async ออก
   }
 };
 
-  // แอบใส่ข้อมูลเข้าไปโชว์ก่อนเพื่อความรวดเร็ว
-  tickets.unshift(ticket);
-  visibleCount = 5; 
-  renderTickets();
-  
-  try {
-    const formData = new URLSearchParams({
-      action: 'create', 
-      reporter: ticket.reporter,
-      category: categoryMap[ticket.category] || ticket.category,
-      problem: ticket.problem,
-      ticket_id: ticket.id
-    });
-
-    await Promise.all([
-      fetch(emailScriptUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData
-      }),
-      fetch(sheetScriptUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData
-      })
-    ]);
-    
-    showToast("ส่งคำขอและบันทึกลงระบบเรียบร้อยแล้ว!");
-  } catch (err) {
-    showToast("บันทึกหน้าเว็บสำเร็จ แต่ฝั่งระบบฐานข้อมูลมีปัญหา", true);
-    console.error(err);
-  } finally {
-    submitBtn.innerHTML = originalBtnText;
-    submitBtn.disabled = false;
-    form.reset();
-    
-    if(window.innerWidth > 900) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
-};
-
-// สั่งทำงานโหลดข้อมูลทันที
+// สั่งทำงานดึงข้อมูลจาก Cloud ทันทีที่โหลดหน้าเว็บ
 loadTicketsFromSheet();
 
 </script>
